@@ -16,6 +16,7 @@
         <mapping class="hibernate.Event"/>
 		<mapping class="hibernate.Trainee"/>
 		<mapping class="hibernate.Course"/>
+		<mapping class="hibernate.Evaluation"/>
         <!-- mapping resource="com/ssn/databaseobjects.xml"/-->
 
     </session-factory>

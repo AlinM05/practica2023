@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.TypedQuery;
 
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
@@ -20,15 +21,34 @@ public class HibernateDemo2 {
 	private void run() throws Exception {
 		setUp();
 		saveEntities();
-//		queryEntities();
+		queryEntities();
+		queryOneEntity();
+	}
+
+	private void queryOneEntity() {
+		EntityManager entityManager = sessionFactory.createEntityManager();
+
+		TypedQuery<Course> query = entityManager.createQuery("from Course where name = :nameParameter", Course.class);
+		query.setParameter("nameParameter", "Romana");
+
+		List<Course> result = query.getResultList();
+
+		for (Course c : result) {
+			System.out.println(c);
+		}
+
+		entityManager.close();
+
 	}
 
 	private void queryEntities() {
 		EntityManager entityManager = sessionFactory.createEntityManager();
-		List<Event> result = entityManager.createQuery("from Event", Event.class).getResultList();
-		for (Event event : result) {
-			System.out.println("Event (" + event.getDate() + ") : " + event.getTitle());
+		List<Course> result = entityManager.createQuery("from Course", Course.class).getResultList();
+
+		for (Course c : result) {
+			System.out.println(c);
 		}
+
 		entityManager.close();
 	}
 
@@ -49,6 +69,12 @@ public class HibernateDemo2 {
 
 		trainee1.getCourses().add(course2);
 		trainee2.getCourses().add(course1);
+
+		Evaluation ev1 = new Evaluation(10, course1, trainee1);
+		Evaluation ev2 = new Evaluation(9, course2, trainee2);
+
+		entityManager.persist(ev1);
+		entityManager.persist(ev2);
 
 		entityManager.getTransaction().commit();
 		entityManager.close();
